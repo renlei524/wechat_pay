@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="online.forgame.wechat_pay.mapper.VideoMapper">
+    <select id="findAll" resultType="Video">
+        SELECT *
+        FROM video
+    </select>
+
+    <select id="findById" resultType="Video">
+        SELECT *
+        FROM video
+        WHERE id = #{id};
+    </select>
+
+    <update id="update">
+        UPDATE video
+        <set>
+            <if test="title != null">title=#{title},</if>
+            <if test="summary != null">summary=#{summary},</if>
+            <if test="coverImg != null">cover_img=#{coverImg},</if>
+            <if test="viewNum != null">view_num=#{viewNum},</if>
+            <if test="price != null">price=#{price},</if>
+            <if test="online != null">online=#{online},</if>
+            <if test="point != null">point=#{point},</if>
+        </set>
+        WHERE id = #{id};
+    </update>
+
+    <delete id="delete">
+        DELETE FROM video
+        WHERE id = #{id};
+    </delete>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO video (title, summary, cover_img, view_num, price, create_time, online, point)
+        VALUES (#{title}, #{summary}, #{coverImg}, #{viewNum}, #{price}, #{createTime}, #{online}, #{point})
+    </insert>
+</mapper>

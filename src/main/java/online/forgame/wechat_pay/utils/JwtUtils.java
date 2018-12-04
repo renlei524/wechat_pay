@@ -1,0 +1,51 @@
+package online.forgame.wechat_pay.utils;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import online.forgame.wechat_pay.domain.User;
+
+import java.util.Date;
+
+public class JwtUtils {
+    private JwtUtils() {
+    }
+
+    //发布单位
+    private static final String SUBJECT = "online.forgame";
+    //过期时间，毫秒，一周
+    private static final long EXPIRE = 1000 * 60 * 60 * 24 * 7;
+    //秘钥
+    private static final String APPSECRET = "alice";
+
+    /**
+     * 生成Token
+     */
+    public static String geneJsonWebToken(User user) {
+        if (user == null || user.getId() == null || user.getName() == null
+                || user.getHeadImg() == null) {
+            return null;
+        }
+        String token = Jwts.builder().setSubject(SUBJECT)
+                .claim("id", user.getId())
+                .claim("name", user.getName())
+                .claim("img", user.getHeadImg())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRE))
+                .signWith(SignatureAlgorithm.HS256, APPSECRET).compact();
+        return token;
+    }
+
+    /**
+     * 校验Token
+     */
+    public static Claims checkJWT(String token) {
+        try {
+            final Claims claims = Jwts.parser().setSigningKey(APPSECRET).
+                    parseClaimsJws(token).getBody();
+            return claims;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+}
